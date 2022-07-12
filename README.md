@@ -1,16 +1,11 @@
-# flutter_infinite_list
+# Flutter infinite list
 
-A new Flutter project.
+Ref: https://bloclibrary.dev/#/flutterinfinitelisttutorial
 
-## Getting Started
+Project show a simple list of Posts
+    1. Calls an API
+    2. Uses bloc architecture
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation and Running
+Mac: https://docs.flutter.dev/get-started/install/macos
+Others: https://docs.flutter.dev/get-started/install
