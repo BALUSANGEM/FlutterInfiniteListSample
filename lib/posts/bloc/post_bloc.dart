@@ -5,8 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
-
-import '../model/post.dart';
+import 'package:flutter_infinite_list/posts/posts.dart';
 
 part 'post_event.dart';
 
@@ -59,14 +58,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         <String, String>{'_start': '$startIndex', '_limit': '$_postLimit'},
       ),
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       final body = json.decode(response.body) as List;
       return body.map((dynamic json) {
         return Post(
-        id: json['id'] as int,
-        title: json['title'] as String,
-        body: json['body'] as String,
-      );
+          id: json['id'] as int,
+          title: json['title'] as String,
+          body: json['body'] as String,
+        );
       }).toList();
     }
     throw Exception('Error fetching posts');
