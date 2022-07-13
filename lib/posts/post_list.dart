@@ -5,7 +5,6 @@ import 'package:flutter_infinite_list/widgets/bottom_loader.dart';
 import 'bloc/post_bloc.dart';
 import 'post_list_item.dart';
 
-
 class PostList extends StatefulWidget {
   const PostList({Key? key}) : super(key: key);
 
@@ -14,6 +13,33 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isBottom) context.read<PostBloc>().add(PostFectched());
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostBloc, PostState>(builder: (context, state) {
@@ -33,6 +59,7 @@ class _PostListState extends State<PostList> {
             itemCount: state.hasReachedMax
                 ? state.posts.length
                 : state.posts.length + 1,
+            controller: _scrollController,
           );
         default:
           return const Center(child: CircularProgressIndicator());
