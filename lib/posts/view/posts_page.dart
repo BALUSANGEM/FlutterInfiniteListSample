@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
-import 'bloc/post_bloc.dart';
-import 'post_list.dart';
+import '../bloc/post_bloc.dart';
+import 'posts_list.dart';
 
 class PostsPage extends StatelessWidget {
   const PostsPage({Key? key}) : super(key: key);
@@ -15,7 +15,7 @@ class PostsPage extends StatelessWidget {
       body: BlocProvider(
           create: (_) =>
               PostBloc(httpClient: http.Client())..add(PostFectched()),
-          child: const PostList()),
+          child: const PostsList()),
     );
   }
 }

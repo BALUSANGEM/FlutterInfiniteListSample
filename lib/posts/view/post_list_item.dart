@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'model/post.dart';
+import '../model/post.dart';
 
 class PostListItem extends StatelessWidget {
   const PostListItem({Key? key, required this.post}) : super(key: key);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'posts/posts_page.dart';
+import 'app.dart';
 
 
 void main() {
@@ -17,9 +17,5 @@ void main() {
   // );
 
   BlocOverrides.runZoned(() => runApp(const App()));
-}
-
-class App extends MaterialApp {
-  const App({Key? key}) : super(key: key, home: const PostsPage());
 }
 

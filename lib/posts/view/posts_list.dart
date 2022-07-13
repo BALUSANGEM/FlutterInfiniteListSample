@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_infinite_list/widgets/bottom_loader.dart';
 
-import 'bloc/post_bloc.dart';
+import '../bloc/post_bloc.dart';
 import 'post_list_item.dart';
 
-class PostList extends StatefulWidget {
-  const PostList({Key? key}) : super(key: key);
+class PostsList extends StatefulWidget {
+  const PostsList({Key? key}) : super(key: key);
 
   @override
-  State<PostList> createState() => _PostListState();
+  State<PostsList> createState() => _PostsListState();
 }
 
-class _PostListState extends State<PostList> {
+class _PostsListState extends State<PostsList> {
   final _scrollController = ScrollController();
 
   @override
