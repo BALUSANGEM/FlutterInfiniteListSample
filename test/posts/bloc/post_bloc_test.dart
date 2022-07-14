@@ -22,6 +22,10 @@ void main() {
       Post(id: 1, title: "Title", body: "This is mocked body")
     ];
 
+    const List<Post> extraMockPosts = [
+      Post(id: 2, title: "post title", body: "post body" )
+    ];
+
     setUpAll(() => {registerFallbackValue(Uri())});
 
     setUp(() => {httpClient = MockClient()});
@@ -128,6 +132,35 @@ void main() {
           verify(() => httpClient.get(_postsUrl(start: 1))).called(1);
         },
       );
+
+      blocTest<PostBloc, PostState>(
+        'Emits status successful and does not reach max posts when post list is not empty',
+        setUp: () {
+          when(() => httpClient.get(any())).thenAnswer((_) async {
+            return http.Response(
+              '[{ "id": 2, "title": "post title", "body": "post body" }]',
+              200,
+            );
+          });
+        },
+        build: () => PostBloc(httpClient: httpClient),
+        seed: () => const PostState(
+          status: PostStatus.success,
+          posts: mockPosts,
+        ),
+        act: (bloc) => bloc.add(PostFectched()),
+        expect: () => const <PostState>[
+          PostState(
+            status: PostStatus.success,
+            posts: [...mockPosts, ...extraMockPosts],
+            hasReachedMax: false,
+          )
+        ],
+        verify: (_) {
+          verify(() => httpClient.get(_postsUrl(start: 1))).called(1);
+        },
+      );
+
     });
   });
 }
