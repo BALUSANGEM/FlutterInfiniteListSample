@@ -102,6 +102,32 @@ void main() {
         },
       );
 
+      blocTest(
+        'Emits status success and reaches max posts when fetched post list is empty',
+        setUp: () {
+          when(() => httpClient.get(any())).thenAnswer((_) async {
+            return http.Response(
+              '[]',
+              200,
+            );
+          });
+        },
+        build: () => PostBloc(httpClient: httpClient),
+        seed: () => const PostState(
+          status: PostStatus.success,
+          posts: mockPosts
+        ),
+        act: (PostBloc bloc) => bloc.add(PostFectched()),
+        expect: () => const <PostState>[
+          PostState(
+              status: PostStatus.success,
+              posts: mockPosts,
+              hasReachedMax: true)
+        ],
+        verify: (_) {
+          verify(() => httpClient.get(_postsUrl(start: 1))).called(1);
+        },
+      );
     });
   });
 }
