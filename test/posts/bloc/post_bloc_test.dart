@@ -83,6 +83,25 @@ void main() {
           verify(() => httpClient.get(_postsUrl(start: 0))).called(1);
         },
       );
+
+      blocTest(
+        'Emit failure status when http request fails ',
+        setUp: () {
+          when(() => httpClient.get(any())).thenAnswer((_) async {
+            return http.Response(
+              '',
+              500,
+            );
+          });
+        },
+        build: () => PostBloc(httpClient: httpClient),
+        act: (PostBloc bloc) => bloc.add(PostFectched()),
+        expect: () => const <PostState>[PostState(status: PostStatus.failure)],
+        verify: (_) {
+          verify(() => httpClient.get(_postsUrl(start: 0))).called(1);
+        },
+      );
+
     });
   });
 }
