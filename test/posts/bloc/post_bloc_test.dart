@@ -58,6 +58,31 @@ void main() {
           verify(() => httpClient.get(_postsUrl(start: 0))).called(1);
         },
       );
+
+      blocTest(
+        'Drops new event when processing current event',
+        setUp: () {
+          when(() => httpClient.get(any())).thenAnswer((_) async {
+            return http.Response(
+              '[{ "id": 1, "title": "Title", "body": "This is mocked body" }]',
+              200,
+            );
+          });
+        },
+        build: () => PostBloc(httpClient: httpClient),
+        act: (PostBloc bloc) => bloc
+          ..add(PostFectched())
+          ..add(PostFectched()),
+        expect: () => const <PostState>[
+          PostState(
+              status: PostStatus.success,
+              posts: mockPosts,
+              hasReachedMax: false)
+        ],
+        verify: (_) {
+          verify(() => httpClient.get(_postsUrl(start: 0))).called(1);
+        },
+      );
     });
   });
 }
