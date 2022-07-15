@@ -43,5 +43,13 @@ void main() {
       expect(find.byType(PostListItem), findsNWidgets(5));
       expect(find.byType(BottomLoader), findsOneWidget);
     });
+
+    testWidgets('When max reached does not show bottom loader', (tester) async {
+      when(() => bloc.state).thenReturn(PostState(
+          status: PostStatus.success, posts: mockPosts, hasReachedMax: true));
+      await tester.pumpWidget(MaterialApp(
+          home: BlocProvider.value(value: bloc, child: const PostsList())));
+      expect(find.byType(BottomLoader), findsNothing);
+    });
   });
 }
