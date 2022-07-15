@@ -9,12 +9,18 @@ import 'package:mocktail/mocktail.dart';
 class MockPostBlock extends MockBloc<PostEvent, PostState> implements PostBloc {
 }
 
+List<Post> generateMockPosts(int n) {
+  return List.generate(
+      n, (index) => Post(id: index, title: "Title", body: "This is body"));
+}
+
 void main() {
   late PostBloc bloc;
   setUp(() => {bloc = MockPostBlock()});
 
-  final mockPosts = List.generate(
-      5, (index) => Post(id: index, title: "Title", body: "This is body"));
+  final mockFivePosts = generateMockPosts(5);
+
+  final mockTenPosts = generateMockPosts(10);
 
   group('PostList', () {
     testWidgets('When post status is initial show circular progressbar',
@@ -36,8 +42,8 @@ void main() {
 
     testWidgets('When max not reached shows 5 posts and bottom loader',
         (tester) async {
-      when(() => bloc.state)
-          .thenReturn(PostState(status: PostStatus.success, posts: mockPosts));
+      when(() => bloc.state).thenReturn(
+          PostState(status: PostStatus.success, posts: mockFivePosts));
       await tester.pumpWidget(MaterialApp(
           home: BlocProvider.value(value: bloc, child: const PostsList())));
       expect(find.byType(PostListItem), findsNWidgets(5));
@@ -46,10 +52,23 @@ void main() {
 
     testWidgets('When max reached does not show bottom loader', (tester) async {
       when(() => bloc.state).thenReturn(PostState(
-          status: PostStatus.success, posts: mockPosts, hasReachedMax: true));
+          status: PostStatus.success,
+          posts: mockFivePosts,
+          hasReachedMax: true));
       await tester.pumpWidget(MaterialApp(
           home: BlocProvider.value(value: bloc, child: const PostsList())));
       expect(find.byType(BottomLoader), findsNothing);
+    });
+
+    testWidgets('When scrolled to bottom fetch more posts', (tester) async {
+      when(() => bloc.state).thenReturn(PostState(
+        status: PostStatus.success,
+        posts: mockTenPosts,
+      ));
+      await tester.pumpWidget(MaterialApp(
+          home: BlocProvider.value(value: bloc, child: const PostsList())));
+      await tester.drag(find.byType(PostsList), const Offset(0, -500));
+      verify(() => bloc.add(PostFectched())).called(1);
     });
   });
 }
